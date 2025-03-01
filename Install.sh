@@ -1,45 +1,40 @@
 #!/bin/bash
 
 ### Install Script for custom installation of Neovim
-## Variables
 
+## Variables
 # Const
 GREEN="$(tput setaf 2)"
 BLUE="$(tput setaf 4)"
 SKY_BLUE="$(tput setaf 6)"
 RESET="$(tput sgr0)"
-
 # Env
 USERNAME=$(whoami)
+PACKAGES=("neovim" "git" "luarocks")
 
-# Check if nvim is installed
+## Functions
 
-if pacman -Q | grep -w 'neovim'; then
-    echo "NeoVim is installed"
-else
-    echo "NeoVim is not installed"
-    echo "Installing NeoVim"
-    pacman -S neovim
-fi
+_isInstalled() {
+    package="$1"
+    check="$(sudo pacman -Qs "${package}" | grep "local" | grep "${package} ")"
+    if [ -n "${check}" ]; then
+        echo 0
+        return
+    fi
+    echo 1
+    return
+}
 
-# Check dependencies
+# Check Packages
 
-if pacman -Q | grep -w 'git'; then
-    echo "Git is installed"
-else
-    echo "Git is not installed"
-    echo "Installing Git"
-    pacman -S git
-fi
-
-if pacman -Q | grep -w 'luarocks'; then
-    echo "luarocks is installed"
-else
-    echo "luarocks is not installed"
-    echo "Installing luarocks"
-    pacman -S luarocks
-fi
-
+for PACKAGES; do
+    if [[ $(_isInstalled "${PACKAGES}") == 0 ]]; then
+        echo ":: ${PACKAGES} is already installed."
+    else
+        echo ":: Installing ${PACKAGES}"
+        pacman --noconfirm -S "${PACKAGES}"
+    fi
+done
 
 # Ask wich file to install
 
