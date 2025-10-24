@@ -1,9 +1,23 @@
 #!/bin/bash
 
+##Initialisation
+set -e  # stop on error
+
+# Must be root for this section
+if [[ $EUID -ne 0 ]]; then
+    echo "Please run this script as root"
+    exit 1
+fi
+
 ##Variables
 
+currentUser=${SUDO_USER:-$(whoami)}
 distributionSelection=""
 pacmanSHA=$(sha1sum conf/pacman.conf | awk '{print $1}')
+
+##Welcome message
+
+echo "Welcome $currentUser"
 
 ##Distrib Selection
 
@@ -29,20 +43,20 @@ if [ "$actualSHA" = "$pacmanSHA" ]; then
     echo "Pacman Configuration Modified Successfully"
 else
     echo "Failed to modify Pacman Configuration"
-    exit
+    exit 1
 fi
 
 
 ##Default Sofwares
 
-pacman -Sy git codium 
+pacman -Sy --noconfirm git codium 
 
 ##SDDM
 
 case $distributionSelection in
     1)
     echo "Installing Sugar-Candy theme"
-    paru -Sy sddm-theme-sugar-candy
+    sudo -u $currentUser paru -S --noconfirm sddm-theme-sugar-candy
     echo "Applying theme"
     echo "[Theme]" >> /etc/sddm.conf
     echo "Current=Sugar-Candy" >> /etc/sddm.conf
