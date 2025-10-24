@@ -3,6 +3,7 @@
 ##Variables
 
 distributionSelection=""
+pacmanSHA=$(sha1sum conf/pacman.conf | awk '{print $1}')
 
 ##Distrib Selection
 
@@ -19,7 +20,17 @@ read distributionSelection
 
 ##PowerUp pacman
 
+mv /etc/pacman.conf  /etc/pacman.bak -f
 mv conf/pacman.conf /etc/pacman.conf -f
+
+actuaSHA=$(sha1sum /etc/pacman.conf | awk '{print $1}')
+if [[ "$actualSHA" == "$pacmanSHA"]]; then
+    echo "Pacman Configuration Modified Successfully"
+else
+    echo "Failed to modify Pacman Configuration"
+    exit
+fi
+
 
 ##Default Sofwares
 
