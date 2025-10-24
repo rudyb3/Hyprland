@@ -20,11 +20,12 @@ read distributionSelection
 
 ##PowerUp pacman
 
-mv /etc/pacman.conf  /etc/pacman.bak -f
-mv conf/pacman.conf /etc/pacman.conf -f
+cp /etc/pacman.conf  /etc/pacman.bak -f
+cp conf/pacman.conf /etc/pacman.conf -f
 
-actuaSHA=$(sha1sum /etc/pacman.conf | awk '{print $1}')
-if [[ "$actualSHA" == "$pacmanSHA"]]; then
+actualSHA=$(sha1sum /etc/pacman.conf | awk '{print $1}')
+
+if [$actualSHA = $pacmanSHA]; then
     echo "Pacman Configuration Modified Successfully"
 else
     echo "Failed to modify Pacman Configuration"
