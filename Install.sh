@@ -25,7 +25,7 @@ cp conf/pacman.conf /etc/pacman.conf -f
 
 actualSHA=$(sha1sum /etc/pacman.conf | awk '{print $1}')
 
-if [$actualSHA = $pacmanSHA]; then
+if [ "$actualSHA" = "$pacmanSHA" ]; then
     echo "Pacman Configuration Modified Successfully"
 else
     echo "Failed to modify Pacman Configuration"
